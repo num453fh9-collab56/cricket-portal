@@ -1,8 +1,10 @@
-{
-    "match": "Karachi Kings vs Lahore Qalandars",
-    "tournament": "PSL 2026",
-    "score": "185/4 (18.2 ov)",
-    "status": "Karachi Kings need 12 runs in 10 balls",
-    "timestamp": 1776490103.9090867,
-    "ai_insight": "AI is currently speechless due to an API connection error."
-}
+[
+    {
+        "match": "No Matches Found",
+        "tournament": "N/A",
+        "score": "N/A",
+        "status": "Check back later or check Cricbuzz layout",
+        "timestamp": 1776842869.2854884,
+        "ai_insight": "AI is currently speechless due to lack of matches."
+    }
+]
