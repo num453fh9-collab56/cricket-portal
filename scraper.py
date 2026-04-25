@@ -119,11 +119,10 @@ def fetch_live_scores():
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Cricbuzz live matches container
-       match_blocks = soup.find_all('div', class_=lambda c: c and 'cb-tms-itm' in str(c))
+     # Cricbuzz live matches container
+        match_blocks = soup.find_all('div', class_=lambda c: c and 'cb-tms-itm' in str(c))           
 
         all_matches = []
-
         for block in match_blocks:
             match_data = extract_match_data(block)
             if match_data:
