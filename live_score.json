@@ -1,10 +1,9 @@
 [
     {
-        "match": "No Matches Found",
-        "tournament": "N/A",
-        "score": "N/A",
-        "status": "Check back later or check Cricbuzz layout",
-        "timestamp": 1777134093.262282,
-        "ai_insight": "AI is currently speechless due to lack of matches."
+        "team1": "Peshawar Zalmi",
+        "team2": "Lahore Qalandars",
+        "score": "Live Now",
+        "status": "LIVE",
+        "ai_insight": "Yellow Storm is here! Check the app for ball by ball."
     }
 ]
