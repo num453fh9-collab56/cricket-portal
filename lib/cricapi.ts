@@ -1,41 +1,47 @@
-// ESPN Cricket API - Free, no key needed
 export async function fetchLiveMatches() {
   try {
+    // Using CricketData.org API (Free, real data)
     const response = await fetch(
-      'https://site.api.espn.com/apis/site/v2/sports/cricket/matches',
-      { next: { revalidate: 60 } }
+      'https://api.cricketdata.org/cricket/match/livescore',
+      { 
+        next: { revalidate: 30 },
+        headers: {
+          'Authorization': 'Bearer YOUR_KEY_HERE'
+        }
+      }
     );
     
     const data = await response.json();
     
-    if (!data.events) {
-      return getBackupMockData();
+    if (data.data && Array.isArray(data.data)) {
+      return data.data.map((match: any) => ({
+        id: match.match_id || Math.random(),
+        name: match.series_name || 'Match',
+        status: match.match_status || 'Scheduled',
+        league: extractLeague(match.series_name || ''),
+        competitors: [
+          { name: match.team_1 || 'Team 1', score: match.team_1_score || '-' },
+          { name: match.team_2 || 'Team 2', score: match.team_2_score || '-' }
+        ],
+        venue: match.venue || 'Unknown',
+        date: match.match_date || new Date().toISOString()
+      }));
     }
-
-    return data.events.map((event: any) => ({
-      id: event.id,
-      name: event.name,
-      status: event.status?.type === 'STATUS_IN_PROGRESS' ? 'LIVE' : event.status?.type?.replace('STATUS_', ''),
-      league: extractLeague(event.name),
-      competitors: event.competitions?.[0]?.competitors?.map((comp: any) => ({
-        name: comp.team?.displayName || comp.displayName,
-        score: comp.score || '-'
-      })) || [],
-      venue: event.competitions?.[0]?.venue?.fullName || 'Unknown Venue',
-      date: event.date
-    }));
+    
+    return getBackupMockData();
   } catch (error) {
-    console.error('Error fetching from ESPN API:', error);
+    console.error('Error fetching live matches:', error);
     return getBackupMockData();
   }
 }
 
 function extractLeague(name: string): string {
-  if (name.includes('T20')) return 'T20';
-  if (name.includes('ODI')) return 'ODI';
-  if (name.includes('Test')) return 'Test';
-  if (name.includes('IPL')) return 'IPL';
-  if (name.includes('PSL')) return 'PSL';
+  const lower = name.toLowerCase();
+  if (lower.includes('t20')) return 'T20';
+  if (lower.includes('odi')) return 'ODI';
+  if (lower.includes('test')) return 'Test';
+  if (lower.includes('ipl')) return 'IPL';
+  if (lower.includes('psl')) return 'PSL';
   return 'International';
 }
 
@@ -43,26 +49,38 @@ function getBackupMockData() {
   return [
     {
       id: '1',
-      name: 'India vs Pakistan T20',
+      name: 'Peshawar Zalmi vs Lahore Qalandars - PSL 2026',
+      status: 'LIVE',
+      league: 'PSL',
+      competitors: [
+        { name: 'Peshawar Zalmi', score: '156/4' },
+        { name: 'Lahore Qalandars', score: '0/0' }
+      ],
+      venue: 'Gaddafi Stadium, Lahore',
+      date: new Date().toISOString()
+    },
+    {
+      id: '2',
+      name: 'India vs New Zealand - T20',
       status: 'LIVE',
       league: 'T20',
       competitors: [
-        { name: 'India', score: '120/3' },
-        { name: 'Pakistan', score: '0/0' }
+        { name: 'India', score: '142/3' },
+        { name: 'New Zealand', score: '0/0' }
       ],
       venue: 'MCG, Melbourne',
       date: new Date().toISOString()
     },
     {
-      id: '2',
-      name: 'Peshawar Zalmi vs Lahore Qalandars',
-      status: 'LIVE',
-      league: 'PSL',
+      id: '3',
+      name: 'Mumbai Indians vs Delhi Capitals - IPL',
+      status: 'Scheduled',
+      league: 'IPL',
       competitors: [
-        { name: 'Peshawar Zalmi', score: '145/6' },
-        { name: 'Lahore Qalandars', score: '0/0' }
+        { name: 'Mumbai Indians', score: '-' },
+        { name: 'Delhi Capitals', score: '-' }
       ],
-      venue: 'Gaddafi Stadium',
+      venue: 'Wankhede Stadium, Mumbai',
       date: new Date().toISOString()
     }
   ];
